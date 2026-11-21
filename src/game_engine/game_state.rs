@@ -2,7 +2,7 @@ use std::fmt::Error;
 
 use crate::game_engine::{
     game_logic::GameMoveError,
-    game_move::ProngSlot,
+    game_move::Direction,
     game_state::PlayerColor::{Blue, Red},
 };
 
@@ -52,18 +52,18 @@ impl GameState {
 
     ///gets the pod at a board position or none if there is not a pod there
     pub fn get_obj_at_position(&self, pos: BoardPosition) -> &Option<Pod> {
-        &self.board[pos.x - 1][pos.y - 1]
+        &self.board[pos.y - 1][pos.x - 1]
     }
 
     ///gets the pod at a board position or none if there is not a pod there, allows mutation
     pub fn get_obj_at_position_mut(&mut self, pos: BoardPosition) -> &mut Option<Pod> {
-        &mut self.board[pos.x - 1][pos.y - 1]
+        &mut self.board[pos.y - 1][pos.x - 1]
     }
 
     //sets the space at the board position to the specified value
     pub fn set_obj_at_position(&mut self, pos: BoardPosition, obj: Option<Pod>) -> Option<Pod> {
-        let prev_obj = self.board[pos.x - 1][pos.y - 1];
-        self.board[pos.x - 1][pos.y - 1] = obj;
+        let prev_obj = self.board[pos.y - 1][pos.x - 1];
+        self.board[pos.y - 1][pos.x - 1] = obj;
         return prev_obj;
     }
 }
@@ -86,7 +86,7 @@ impl Pod {
     }
 
     //Add a prong to this pod, returns Err if a prong is already in that position
-    pub fn add_prong(&mut self, pos: ProngSlot) -> Result<(), GameMoveError> {
+    pub fn add_prong(&mut self, pos: Direction) -> Result<(), GameMoveError> {
         let mut try_add = |idx: usize| {
             if !self.prongs[idx] {
                 self.prongs[idx] = true;
@@ -97,14 +97,14 @@ impl Pod {
         };
 
         match pos {
-            ProngSlot::U => try_add(0),
-            ProngSlot::Ur => try_add(1),
-            ProngSlot::R => try_add(2),
-            ProngSlot::Dr => try_add(3),
-            ProngSlot::D => try_add(4),
-            ProngSlot::Dl => try_add(5),
-            ProngSlot::L => try_add(6),
-            ProngSlot::Ul => try_add(7),
+            Direction::U => try_add(0),
+            Direction::Ur => try_add(1),
+            Direction::R => try_add(2),
+            Direction::Dr => try_add(3),
+            Direction::D => try_add(4),
+            Direction::Dl => try_add(5),
+            Direction::L => try_add(6),
+            Direction::Ul => try_add(7),
         }
     }
 }
@@ -119,18 +119,35 @@ pub enum PlayerColor {
 /// where 1, 1 is the top left corner and 6, 7 is the bottom right
 /// x increases from left to right, in the range 1-6 inclusive
 /// y increases from top to bottom in the range 1-7 inclusive
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct BoardPosition {
     pub x: usize,
     pub y: usize,
 }
 
 impl BoardPosition {
+    ///create a new boardposition from the given coordinates
+    /// returns err if coordinates are out of bounds
     pub fn new(x: usize, y: usize) -> Result<BoardPosition, Error> {
         if x < 1 || x > 6 || y < 1 || y > 7 {
             return Err(Error);
         } else {
             Ok(BoardPosition { x: x, y: y })
+        }
+    }
+
+    /// creates a boardposition for the space adjcent to this one in the given direction
+    /// returns err if the position is out of bounds
+    pub fn get_adjcent(&self, dir: Direction) -> Result<BoardPosition, Error> {
+        match dir {
+            Direction::U => todo!(),
+            Direction::Ur => todo!(),
+            Direction::R => todo!(),
+            Direction::Dr => todo!(),
+            Direction::D => todo!(),
+            Direction::Dl => todo!(),
+            Direction::L => todo!(),
+            Direction::Ul => todo!(),
         }
     }
 }

@@ -1,3 +1,5 @@
+use std::{error::Error, fmt::Display};
+
 use crate::game_engine::game_state::BoardPosition;
 
 ///Enumerates the different types of move a player could make on their turn
@@ -12,12 +14,27 @@ pub enum GameMove {
 
 pub struct AddProngData {
     pub pod_position: BoardPosition,
-    pub prong_postion: ProngSlot,
+    pub prong_direction: Direction,
 }
 
-///Represents the 8 slots that a prong can be put into a pod, and the respective directions that the pod can move
+pub struct MoveData {
+    /// starting position of the pod
+    pub from: BoardPosition,
+    /// direction the pod is moving in
+    pub direction: Direction,
+}
+
+pub struct JumpData {
+    pub from: BoardPosition,
+    pub direction: Direction,
+    pub capture: bool,
+    pub next_segment: Option<Box<JumpData>>,
+}
+
+///Represents the 8 directions a pod can move, and the respective slots for prongs
 /// Up, Down, Left and Right, and the intermediates Up+Right, Down+Left, etc.
-pub enum ProngSlot {
+#[derive(Clone, Copy)]
+pub enum Direction {
     ///Up
     U,
     ///Up + Right
@@ -34,16 +51,4 @@ pub enum ProngSlot {
     L,
     ///Up + Left
     Ul,
-}
-
-pub struct MoveData {
-    pub from: BoardPosition,
-    pub to: BoardPosition,
-}
-
-pub struct JumpData {
-    pub from: BoardPosition,
-    pub to: BoardPosition,
-    pub capture: bool,
-    pub next_segment: Option<Box<JumpData>>,
 }
